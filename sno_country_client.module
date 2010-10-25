@@ -7,7 +7,7 @@
  * @package Sno Country Ski Hub
  * @version 1.0-dev
  *
- * The Sno Country Client module uses ctools to allow users to add many sno country resorts ad allow this to create block using: block-sno-country-%my-resort-name.tpl.php
+ * The Sno Country Client module uses ctools to allow users to add many sno country resorts ad allow this to create block using: sno-country-client--%my-resort-name.tpl.php
  * To theme and preprocess the blocks.
  * @todo - document the darn thing!
  */
