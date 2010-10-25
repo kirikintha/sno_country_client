@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file sno_country_client.install 
+ * Sno Country Client Install
+ * Version: 1.0
+ */
+
+/**
+ * Module Definitions
+ */
+define('INSTALLED_MODULE_NAME', 'Sno Country Client');
+
+/**
+ * Hook Requirements
+ * @internal This is where we will put the requirements for this module, so the end user can finish the installation properly.
+ */
+function sno_country_client_requirements($phase) {
+  //Clear the requirements array.
+  $requirements = array();
+  //Switch between phases.
+  switch ( $phase ) {
+    //Install Phase.
+    case 'install':
+      break;
+    //Runtime Phase. This is where we will scan for requirements, so that they persist sitewide.
+    case 'runtime':
+      break;
+  }
+  return $requirements;
+}
+
+/**
+ * Hook Enable
+ */
+function sno_country_client_enable() {
+  //Provide a pleasant message when we install the module.
+  $MSG = t('You have successfully enabled the @name Module. Please look at the module documentation for more help in development.', array('@name' => INSTALLED_MODULE_NAME));
+  drupal_set_message($MSG);
+}
+
+/**
+ * Hook Disable
+ */
+function sno_country_client_disable() {
+  //Provide a pleasant message when disabling the module.
+  $MSG = t('@name Module sucessfully disabled.', array('@name' => INSTALLED_MODULE_NAME));
+  drupal_set_message($MSG);
+}
+
+/**
+ * Hook Install
+ */
+function sno_country_client_install() {
+  //Installation Here.
+}
+
+/**
+ * Hook Uninstall
+ */
+function sno_country_client_uninstall() {
+  //Delete variables.
+  variable_del('sno_country_client_blocks');
+  //Provide a pleasant message when uninstalling the module.
+  $MSG = t('@name Module sucessfully uninstalled.', array('@name' => INSTALLED_MODULE_NAME));
+  drupal_set_message($MSG);
+}

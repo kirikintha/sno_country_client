@@ -1,0 +1,6 @@
+name            = Sno Country Hub: Client
+description     = This is the client module for ski.bluetent.com
+dependencies[]  = ctools
+core            = 6.x
+package         = Sno Country Hub
+version         = 1.x-dev

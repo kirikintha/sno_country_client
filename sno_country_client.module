@@ -1,0 +1,121 @@
+<?php
+/**
+ * @name Sno Country Client
+ * @category weather
+ * @copyright 2010 Blue Tent Marketing
+ * @author Paul T. Huntsberger <paul@bluetent.com>.
+ * @package Sno Country Ski Hub
+ * @version 1.0-dev
+ *
+ * The Sno Country Client module uses ctools to allow users to add many sno country resorts ad allow this to create block using: block-sno-country-%my-resort-name.tpl.php
+ * To theme and preprocess the blocks.
+ * @todo - document the darn thing!
+ */
+
+//Global Module Definitions.
+define('SNO_COUNTRY_CLIENT_MODULE_PATH', drupal_get_path('module', 'sno_country_client'));
+define('SNO_COUNTRY_CLIENT_HOSTS_DEFAULT', 'ski.bluetent.com/snocountry-hub/get-report');
+
+/**
+ * Implementation of hook_init().
+ */
+function sno_country_client_init() {
+  //Module Include Files when the module initializes in admin.
+  //Admin Files
+  include_once(SNO_COUNTRY_CLIENT_MODULE_PATH .'/includes/admin.sno_country_client.inc');
+  //Include module functions
+  include_once(SNO_COUNTRY_CLIENT_MODULE_PATH .'/includes/sno_country_client.inc');
+  //Include theme files
+  include_once(SNO_COUNTRY_CLIENT_MODULE_PATH .'/theme/theme.sno_country_client.inc');
+  //Add CSS files
+  drupal_add_css(SNO_COUNTRY_CLIENT_MODULE_PATH .'/css/sno-country-client-styles.css', 'module', 'all');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function sno_country_client_menu() {
+  $items = array();
+  //Main menu.
+  $items['admin/settings/snocountry/client'] = array(
+    'title'             => t('Sno Country Client'),
+    'page callback'     => 'drupal_get_form',
+    'page arguments'    => array('_sno_country_client_main_settings'),
+    'type'              => MENU_NORMAL_ITEM,
+    'access arguments'  => array('administer site configuration'),
+  );
+  //Default local menu.
+  $items['admin/settings/snocountry/client/main'] = array(
+    'title'             => t('Main Panel'),
+    'page callback'     => 'drupal_get_form',
+    'page arguments'    => array('_sno_country_client_main_settings'),
+    'type'              => MENU_DEFAULT_LOCAL_TASK,
+    'access arguments'  => array('administer site configuration'),
+    'weight'            => -100,
+  );
+  //Callbacks
+  $items['admin/settings/snocountry/client/main/resort/%ctools_js'] = array(
+    'page callback'    => '_sno_country_client_main_settings_callback',
+    'page arguments'   => array(6),
+    'type'             => MENU_CALLBACK,
+    'access arguments' => array('administer site configuration'),
+  );
+  $items['admin/settings/snocountry/client/main/resort/%ctools_js/add'] = array(
+    'page callback'    => '_sno_country_client_main_settings_callback',
+    'page arguments'   => array(6,7),
+    'type'             => MENU_CALLBACK,
+    'access arguments' => array('administer site configuration'),
+  );
+  $items['admin/settings/snocountry/client/main/resort/%ctools_js/edit/%resort_id'] = array(
+    'page callback'    => '_sno_country_client_main_settings_callback',
+    'page arguments'   => array(6,7,8),
+    'type'             => MENU_CALLBACK,
+    'access arguments' => array('administer site configuration'),
+  );
+  //Return Items.
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme()
+ */
+function sno_country_client_theme() {
+  //Build our Theme Array
+  $theme = array();
+  $path  = SNO_COUNTRY_CLIENT_MODULE_PATH .'/theme';
+  //This works in our theme implementation.
+  $theme['sno_country_client_block'] = array (
+    'file'      => 'theme.sno_country_client.inc',
+    'path'      => $path,
+    'pattern'   => 'sno_country_client_block__',
+    'template'  => 'sno-country-client-block',
+    'arguments' => array('resort' => NULL, 'widget' => NULL),
+  );
+  return $theme;
+}
+
+/**
+ * Implementation of hook_block()
+ */
+function sno_country_client_block($op = 'list', $delta = 0, $edit = array()) {
+  //Switch through Ops @todo - we need to add in configure options, when we add new blocks @todo - When we move to multiple blocks and options, this makes everything easier. Remember block delta's should remain numeric
+  $blocks = variable_get('sno_country_client_blocks', NULL);
+  switch ($op) {
+    case 'list':
+      $items = array();
+      if (!empty($blocks)) {
+        //If we have out list of variables, and they are not NULL then show the blocks
+        foreach ($blocks as $key => $value ) {
+          $items[$value['resort_id']]['info']  = t('Snow Country Resort: @INFO', array('@INFO' => $value['human_name']));
+          $items[$value['resort_id']]['cache'] = BLOCK_NO_CACHE;
+        }
+      }
+      return $items;
+    case 'view':
+      //Find our block through the delta and theme them accordingly @todo - When we move to a more normalized system, our arrays will populate this info automatically now
+      $block['subject'] = $blocks[$delta]['human_name'];
+      $block['content'] = theme(array($blocks[$delta]['theme'],'sno_country_client_block'),$blocks[$delta]);
+      //krumo($block);
+      return $block;
+  }
+}
