@@ -17,8 +17,10 @@ function _snow_country_client_process_url($vars) {
       $vars['widget']['report'][$element] = (string)$value;
     }
     //Cumulative Snowfall.
+    $i = 0;
     foreach ($xml->cumulativesnowfall->children() as $element => $value) {
-      $vars['widget']['cumulativesnowfall'][$element] = (array)$value;
+      $vars['widget']['cumulativesnowfall'][$element.$i] = (array)$value;
+      $i++;
     }
     return $vars;
   }
