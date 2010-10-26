@@ -5,7 +5,7 @@
  * @copyright 2010 Blue Tent Marketing
  * @author Paul T. Huntsberger <paul@bluetent.com>.
  * @package Sno Country Ski Hub
- * @version 1.0-dev
+ * @version 1.0-alpha1
  *
  * The Sno Country Client module uses ctools to allow users to add many sno country resorts ad allow this to create block using: sno-country-client--%my-resort-name.tpl.php
  * To theme and preprocess the blocks.
@@ -98,7 +98,7 @@ function sno_country_client_theme() {
  * Implementation of hook_block()
  */
 function sno_country_client_block($op = 'list', $delta = 0, $edit = array()) {
-  //Switch through Ops @todo - we need to add in configure options, when we add new blocks @todo - When we move to multiple blocks and options, this makes everything easier. Remember block delta's should remain numeric
+  //Switch through Ops. Remember block delta's should remain numeric, or we run into limits.
   $blocks = variable_get('sno_country_client_blocks', NULL);
   switch ($op) {
     case 'list':
