@@ -53,6 +53,17 @@ function sno_country_client_menu() {
     'access arguments'  => array('administer site configuration'),
     'weight'            => -100,
   );
+  //If we have the noaa_weather module, then we can add a tab to the NOAA Weather interface.
+  if (module_exists('noaa_weather')) {
+    $items['admin/settings/noaaweather/snocountry'] = array(
+      'title'             => t('Sno Country Client'),
+      'page callback'     => 'drupal_get_form',
+      'page arguments'    => array('_sno_country_client_main_settings'),
+      'type'              => MENU_LOCAL_TASK,
+      'access arguments'  => array('administer site configuration'),
+      'weight'            => 100,
+    );
+  }
   //Callbacks
   $items['admin/settings/snocountry/client/main/resort/%ctools_js'] = array(
     'page callback'    => '_sno_country_client_main_settings_callback',
