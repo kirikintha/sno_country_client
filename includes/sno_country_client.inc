@@ -13,14 +13,21 @@ function _snow_country_client_process_url($vars) {
     $url   = 'http://' .$vars['resort']['hub_url'] .'/' .$vars['resort']['resort_id'] .'/' .$vars['resort']['accumulation_days'];
     $reply = drupal_http_request($url);
     $xml   = simplexml_load_string($reply->data);
-    foreach ($xml->report->children() as $element => $value) {
-      $vars['widget']['report'][$element] = (string)$value;
-    }
-    //Cumulative Snowfall.
-    $i = 0;
-    foreach ($xml->cumulativesnowfall->children() as $element => $value) {
-      $vars['widget']['cumulativesnowfall'][$element.$i] = (array)$value;
-      $i++;
+    if (is_object($xml)) {
+      if ($xml->report->children()) {
+        //If we have a report.
+        foreach ($xml->report->children() as $element => $value) {
+          $vars['widget']['report'][$element] = (string)$value;
+        }
+      }
+      //If we have cumulative snowfall.
+      if ($xml->cumulativesnowfall->children()){
+        $i = 0;
+        foreach ($xml->cumulativesnowfall->children() as $element => $value) {
+          $vars['widget']['cumulativesnowfall'][$element.$i] = (array)$value;
+          $i++;
+        }
+      }
     }
     return $vars;
   }
