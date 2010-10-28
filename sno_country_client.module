@@ -106,16 +106,21 @@ function sno_country_client_block($op = 'list', $delta = 0, $edit = array()) {
       if (!empty($blocks)) {
         //If we have out list of variables, and they are not NULL then show the blocks
         foreach ($blocks as $key => $value ) {
-          $items[$value['resort_id']]['info']  = t('Snow Country Resort: @INFO', array('@INFO' => $value['human_name']));
-          $items[$value['resort_id']]['cache'] = BLOCK_NO_CACHE;
+          //Check to see if our block is active.
+          if ($value['active'] == TRUE) {
+            $items[$value['resort_id']]['info']  = t('Snow Country Resort: @INFO', array('@INFO' => $value['human_name']));
+            $items[$value['resort_id']]['cache'] = BLOCK_NO_CACHE;
+          }
         }
       }
       return $items;
     case 'view':
-      //Find our block through the delta and theme them accordingly @todo - When we move to a more normalized system, our arrays will populate this info automatically now
-      $block['subject'] = $blocks[$delta]['human_name'];
-      $block['content'] = theme(array($blocks[$delta]['theme'],'sno_country_client_block'),$blocks[$delta]);
-      //krumo($block);
+      //Find our block through the delta and theme them accordingly.
+      if ($blocks[$delta]['active'] == TRUE) {
+        $block['subject'] = $blocks[$delta]['human_name'];
+        $block['content'] = theme(array($blocks[$delta]['theme'],'sno_country_client_block'),$blocks[$delta]);
+        //krumo($block);
+      }
       return $block;
   }
 }
