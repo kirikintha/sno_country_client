@@ -7,7 +7,7 @@
  */
 
 function _snow_country_client_process_url($vars) {
-  if (empty($vars['resort'])) {
+  if (empty($vars['resort']) || $vars['resort']['active'] == FALSE) {
     return FALSE;
   } else {
     $url   = 'http://' .$vars['resort']['hub_url'] .'/' .$vars['resort']['resort_id'] .'/' .$vars['resort']['accumulation_days'];

@@ -39,7 +39,8 @@ function _sno_country_client_main_settings() {
       $msg['!days']       = '<p>Accumulation Days: ' .$resort['accumulation_days'] .'</p>';
       $connection         = 'http://' .$resort['hub_url'] .'/' .$resort['resort_id'] .'/' .$resort['accumulation_days'];
       $msg['!connection'] = '<p>' .l($connection,$connection) .'</p>';
-      $options[] = t('!title !theme_name !days !connection',$msg);
+      $msg['!active']     = ($resort['active'] == TRUE) ? '<div class="message status"><p style="text-align:right;padding-right:5px;">Active</p></div>' : '<div class="message warning"><p style="text-align:right;padding-right:5px;">Inactive</p></div>';
+      $options[] = t('!active !title !theme_name !days !connection',$msg);
     }
     $data = theme('item_list',$options);
   }
@@ -99,6 +100,7 @@ function _sno_country_add_resort($js = FALSE, $op = NULL, $resort_id = NULL) {
     $resort = $resorts[$resort_id];
   } else {
     $resort['hub_url'] = SNO_COUNTRY_CLIENT_HOSTS_DEFAULT;
+    $resort['active']  = TRUE;
   }
   $form['add_resort'] = array(
     '#action' => 'admin/settings/snocountry/client/main',
@@ -155,6 +157,15 @@ function _sno_country_add_resort($js = FALSE, $op = NULL, $resort_id = NULL) {
     '#default_value' => $resort['accumulation_days'],
     '#weight'        => -46,
   );
+  $form['add_resort']['active'] = array(
+    '#title'         => t('Active'),
+    '#description'   => t('Is this block active? Check this box to make this resort active.'),
+    '#type'          => 'checkbox',
+    '#required'      => TRUE,
+    '#options'       => array(TRUE,FALSE),
+    '#default_value' => $resort['active'],
+    '#weight'        => -45,
+  );
   $form['add_resort']['submit'] = array(
     '#type'  => 'submit',
     '#value' => 'Save Resort',
@@ -188,6 +199,7 @@ function _sno_country_add_resort_submit($form_id, &$form_state) {
       'hub_url'           => $form_state['values']['hub_url'],
       'resort_id'         => $form_state['values']['resort_id'],
       'theme'             => $theme_name,
+      'active'            => $form_state['values']['active'],
     );
     $msg = t('Resort Saved.');
   } else {
